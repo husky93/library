@@ -2,6 +2,8 @@ const addBookModal = document.querySelector('.modal-panel');
 const modalBackdrop = document.querySelector('.modal-backdrop');
 const modalPopupBtn = document.querySelector('button[data-modal-toggle]');
 const modalCancelBtn = document.querySelector('.cancel');
+const modalAddBtn = document.querySelector('.add');
+const addBookForm = document.querySelector('.add-book-form');
 
 let myLibrary = [];
 
@@ -9,6 +11,7 @@ addBookModal.addEventListener('click', e => e.stopPropagation());
 modalPopupBtn.addEventListener('click', showModal);
 modalBackdrop.addEventListener('click', hideModal);
 modalCancelBtn.addEventListener('click', hideModal);
+addBookForm.addEventListener('submit', addBookToLibrary);
 
 function Book(title, author, pages, read) {
     this.title = title;
@@ -20,8 +23,16 @@ function Book(title, author, pages, read) {
     } 
 }
 
-function addBookToLibrary() {
-    
+function addBookToLibrary(e) {
+    e.preventDefault();
+    hideModal();
+    const title = e.target.elements.title.value;
+    const author = e.target.elements.author.value;
+    const pages = parseInt(e.target.elements.pages.value);
+    const read = e.target.elements.read.checked;
+
+    myLibrary.push(new Book(title, author, pages, read));
+    console.log(myLibrary);
 }
 
 function showModal() {
