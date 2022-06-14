@@ -4,6 +4,7 @@ const modalPopupBtn = document.querySelector('button[data-modal-toggle]');
 const modalCancelBtn = document.querySelector('.cancel');
 const modalAddBtn = document.querySelector('.add');
 const addBookForm = document.querySelector('.add-book-form');
+const booksContainer = document.querySelector('.books');
 
 let myLibrary = [];
 
@@ -32,7 +33,46 @@ function addBookToLibrary(e) {
     const read = e.target.elements.read.checked;
 
     myLibrary.push(new Book(title, author, pages, read));
-    console.log(myLibrary);
+    displayBooks();
+}
+
+function displayBooks() {
+    myLibrary.forEach(book => {
+        const card = document.createElement('div');
+        const title = document.createElement('h5');
+        const author = document.createElement('p');
+        const pages = document.createElement('p');
+
+        card.classList.add('block', 'p-6', 'max-w-sm', 'bg-white', 'rounded-lg', 'border', 'border-gray-200', 'shadow-md',
+                                'hover:bg-gray-100', 'dark:bg-gray-800', 'dark:border-gray-700', 'dark:hover:bg-gray-700');
+        title.classList.add('mb-1', 'text-2xl', 'font-bold', 'tracking-tight', 'text-gray-900', 'dark:text-white');
+        author.classList.add('font-medium', 'mb-4', 'text-gray-700', 'dark:text-gray-400');
+        pages.classList.add('text-sm', 'font-normal', 'text-gray-600', 'dark:text-gray-400');
+
+        title.textContent = book.title;
+        author.textContent = book.author;
+        pages.textContent = `${book.pages} pages`;
+
+        card.append(title, author, pages);
+
+        if(book.read) {
+            const container = document.createElement('div');
+            const checkmark = document.createElement('ion-icon');
+            const read = document.createElement('p');
+
+            container.classList.add('flex', 'items-center');
+            read.classList.add('text-sm', 'font-normal', 'text-gray-600', 'dark:text-gray-400');
+            checkmark.classList.add('w-6', 'h-6', 'text-lime-600');
+
+            checkmark.setAttribute('name', 'checkmark-outline');
+            read.textContent = 'Read';
+
+            container.append(checkmark, read);
+            card.appendChild(container);
+        }
+
+        booksContainer.appendChild(card);
+    })
 }
 
 function showModal() {

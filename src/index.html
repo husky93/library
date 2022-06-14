@@ -13,10 +13,20 @@
             <h1 class="text-3xl text-gray-900 font-extrabold">Library</h1>
             <button class="transition-all flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">Sign in</button>
         </header>
-        <section class="p-8 flex justify-center align-middle">
-            <div class="books"></div>
-            <div class="add">
-                <button class="transition-all flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 modal-toggler" type="button" data-modal-toggle="addBookModal">
+        <section class="p-8 flex flex-col justify-center align-middle">
+            <div class="books flex flex-wrap gap-4">
+                <div class="block p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                    <h5 class="mb-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">The Hobbit</h5>
+                    <p class="font-medium mb-4 text-gray-700 dark:text-gray-400">by J.R.R. Tolkien</p>
+                    <p class="text-sm font-normal text-gray-600 dark:text-gray-400">267 pages</p> 
+                    <div class="checkmark flex items-center">
+                        <ion-icon name="checkmark-outline" class="w-6 h-6 text-lime-600"></ion-icon>
+                        <p class="text-sm font-normal text-gray-600 dark:text-gray-400">Read</p>
+                    </div>
+                </div>
+            </div>
+            <div class="add text-center">
+                <button class="transition-all flex items-center justify-center mt-6 px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 modal-toggler" type="button" data-modal-toggle="addBookModal">
                     Add new book
                 </button>
             </div>
@@ -54,6 +64,8 @@
             </div>
         </div>
     </div>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>
