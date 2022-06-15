@@ -107,7 +107,7 @@ function addReadCheckmark(parentNode) {
     parentNode.setAttribute('data-read', true);
 }
 
-function removeCheckmark(parentNode) {
+function removeReadCheckmark(parentNode) {
     while(parentNode.firstChild) {
         parentNode.removeChild(parentNode.lastChild);
     }
