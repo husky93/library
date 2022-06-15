@@ -1,5 +1,5 @@
 # Library
-[CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) app in which you can add and delete books, and change their read status. Made with vanilla Javascript and [Tailwind](https://tailwindcss.com/) css framework.
+[CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) app in which you can create a collection of books you've read and you want to read in the future. Made with vanilla Javascript and [Tailwind](https://tailwindcss.com/) CSS framework.
 
 #### Features:
 - Popup modal
