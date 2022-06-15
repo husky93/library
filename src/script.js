@@ -59,14 +59,17 @@ function displayBooks() {
         const pages = document.createElement('p');
         const close = document.createElement('a');
         const closeIcon = document.createElement('ion-icon');
+        const readContainer = document.createElement('div');
+        const toggler = book.read ? createToggleInput(index, true) : createToggleInput(index, false);
 
         card.classList.add('relative', 'block', 'p-6', 'max-w-sm', 'bg-white', 'rounded-lg', 'border', 'border-gray-200', 'shadow-md',
                                 'hover:bg-gray-100', 'dark:bg-gray-800', 'dark:border-gray-700', 'dark:hover:bg-gray-700');
         close.classList.add('absolute', 'top-2', 'right-1', 'cursor-pointer', 'close')
         closeIcon.classList.add('w-5','h-5');
         title.classList.add('mb-1', 'text-2xl', 'font-bold', 'tracking-tight', 'text-gray-900', 'dark:text-white');
-        author.classList.add('font-medium', 'mb-4', 'text-gray-700', 'dark:text-gray-400');
+        author.classList.add('font-medium', 'mb-6', 'text-gray-700', 'dark:text-gray-400');
         pages.classList.add('text-sm', 'font-normal', 'text-gray-600', 'dark:text-gray-400');
+        readContainer.classList.add('flex', 'items-center', 'mt-2');
 
         closeIcon.setAttribute('name', 'close-outline');
         card.setAttribute('data-index', index);
@@ -76,29 +79,80 @@ function displayBooks() {
         pages.textContent = `${book.pages} pages`;
 
         close.appendChild(closeIcon);
-        card.append(close, title, author, pages);
+        card.append(close, title, author, pages, readContainer, toggler);
 
         close.addEventListener('click', deleteBook);
+        toggler.addEventListener('change', changeReadStatus)
 
         if(book.read) {
-            const container = document.createElement('div');
-            const checkmark = document.createElement('ion-icon');
-            const read = document.createElement('p');
-
-            container.classList.add('flex', 'items-center');
-            read.classList.add('text-sm', 'font-normal', 'text-gray-600', 'dark:text-gray-400');
-            checkmark.classList.add('w-6', 'h-6', 'text-lime-600');
-
-            checkmark.setAttribute('name', 'checkmark-outline');
-            read.textContent = 'Read';
-
-            container.append(checkmark, read);
-            card.appendChild(container);
+            addReadCheckmark(readContainer);
+        } else {
+            readContainer.setAttribute('data-read', false);
         }
+
         myLibraryDOM.push(card);
         index++;
     })
     booksContainer.replaceChildren(...myLibraryDOM);
+}
+
+function addReadCheckmark(parentNode) {
+    const checkmark = document.createElement('ion-icon');
+    const read = document.createElement('p');
+    read.classList.add('text-sm', 'font-normal', 'text-gray-600', 'dark:text-gray-400');
+    checkmark.classList.add('w-6', 'h-6', 'text-lime-600');
+    checkmark.setAttribute('name', 'checkmark-outline');
+    read.textContent = 'Read';
+    parentNode.append(checkmark, read);
+    parentNode.setAttribute('data-read', true);
+}
+
+function removeCheckmark(parentNode) {
+    while(parentNode.firstChild) {
+        parentNode.removeChild(parentNode.lastChild);
+    }
+}
+
+function createToggleInput(index, read) {
+    const toggler = document.createElement('label');
+    const input = document.createElement('input');
+    const dot = document.createElement('div');
+    const label = document.createElement('span');
+
+    toggler.classList.add('inline-flex', 'relative', 'items-center', 'mt-4', 'cursor-pointer');
+    input.classList.add('sr-only', 'peer');
+    dot.classList.add('w-9', 'h-5', 'bg-gray-200', 'peer-focus:outline-none', 'rounded-full', 
+                        'peer', 'dark:bg-gray-700', 'peer-checked:after:translate-x-full', 'peer-checked:after:border-white', `after:content-['']`, 
+                        'after:absolute', 'after:top-[2px]', 'after:left-[2px]', 'after:bg-white', 'after:border-gray-300', 'after:border', 'after:rounded-full',
+                        'after:h-4', 'after:w-4', 'after:transition-all', 'dark:border-gray-600', 'peer-checked:bg-blue-600')
+    label.classList.add('text-sm', 'font-normal', 'text-gray-600', 'dark:text-gray-400', 'ml-2');
+
+    toggler.setAttribute('data-index', index);
+    toggler.setAttribute('for', `toggler-${index}`);
+    input.setAttribute('type', 'checkbox');
+    input.setAttribute('id', `toggler-${index}`);
+    if(read) {
+        input.checked = true;
+    }
+
+    label.textContent = 'Change read status';
+
+    toggler.append(input, dot, label);
+
+    return toggler;
+}
+
+function changeReadStatus(e) {
+    const index = e.target.parentNode.dataset.index;
+    const readContainer = document.querySelector(`div[data-index="${index}"] div[data-read]`);
+
+    if(e.target.checked) {
+        myLibrary[index].read = true;
+        addReadCheckmark(readContainer);
+    } else {
+        myLibrary[index].read = false;
+        removeCheckmark(readContainer);
+    }
 }
 
 function showModal() {
