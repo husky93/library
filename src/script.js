@@ -151,7 +151,7 @@ function changeReadStatus(e) {
         addReadCheckmark(readContainer);
     } else {
         myLibrary[index].read = false;
-        removeCheckmark(readContainer);
+        removeReadCheckmark(readContainer);
     }
 }
 
