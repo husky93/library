@@ -12,7 +12,10 @@ addBookModal.addEventListener('click', e => e.stopPropagation());
 modalPopupBtn.addEventListener('click', showModal);
 modalBackdrop.addEventListener('click', hideModal);
 modalCancelBtn.addEventListener('click', hideModal);
-addBookForm.addEventListener('submit', addBookToLibrary);
+addBookForm.addEventListener('submit', e => {
+    addBookToLibrary(e);
+    displayBooks();
+});
 
 function Book(title, author, pages, read) {
     this.title = title;
@@ -33,27 +36,37 @@ function addBookToLibrary(e) {
     const read = e.target.elements.read.checked;
 
     myLibrary.push(new Book(title, author, pages, read));
-    displayBooks();
 }
 
 function displayBooks() {
+    let myLibraryDOM = [];
+    let index = 0;
+
     myLibrary.forEach(book => {
         const card = document.createElement('div');
         const title = document.createElement('h5');
         const author = document.createElement('p');
         const pages = document.createElement('p');
+        const close = document.createElement('a');
+        const closeIcon = document.createElement('ion-icon');
 
-        card.classList.add('block', 'p-6', 'max-w-sm', 'bg-white', 'rounded-lg', 'border', 'border-gray-200', 'shadow-md',
+        card.classList.add('relative', 'block', 'p-6', 'max-w-sm', 'bg-white', 'rounded-lg', 'border', 'border-gray-200', 'shadow-md',
                                 'hover:bg-gray-100', 'dark:bg-gray-800', 'dark:border-gray-700', 'dark:hover:bg-gray-700');
+        close.classList.add('absolute', 'top-2', 'right-1', 'cursor-pointer', 'close')
+        closeIcon.classList.add('w-5','h-5');
         title.classList.add('mb-1', 'text-2xl', 'font-bold', 'tracking-tight', 'text-gray-900', 'dark:text-white');
         author.classList.add('font-medium', 'mb-4', 'text-gray-700', 'dark:text-gray-400');
         pages.classList.add('text-sm', 'font-normal', 'text-gray-600', 'dark:text-gray-400');
+
+        closeIcon.setAttribute('name', 'close-outline');
+        card.setAttribute('data-index', index);
 
         title.textContent = book.title;
         author.textContent = book.author;
         pages.textContent = `${book.pages} pages`;
 
-        card.append(title, author, pages);
+        close.appendChild(closeIcon);
+        card.append(close, title, author, pages);
 
         if(book.read) {
             const container = document.createElement('div');
@@ -70,9 +83,11 @@ function displayBooks() {
             container.append(checkmark, read);
             card.appendChild(container);
         }
-
-        booksContainer.appendChild(card);
+        myLibraryDOM.push(card);
+        index++;
     })
+    booksContainer.replaceChildren(...myLibraryDOM);
+    
 }
 
 function showModal() {
