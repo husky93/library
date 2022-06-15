@@ -5,6 +5,7 @@ const modalCancelBtn = document.querySelector('.cancel');
 const modalAddBtn = document.querySelector('.add');
 const addBookForm = document.querySelector('.add-book-form');
 const booksContainer = document.querySelector('.books');
+const deleteButtons = document.querySelectorAll('.close');
 
 let myLibrary = [];
 
@@ -38,6 +39,15 @@ function addBookToLibrary(e) {
     myLibrary.push(new Book(title, author, pages, read));
 }
 
+function deleteBook(e) {
+    const book = e.target.parentNode.parentNode;
+    const index = book.dataset.index;
+
+    myLibrary.splice(index, 1);
+
+    displayBooks()
+}
+
 function displayBooks() {
     let myLibraryDOM = [];
     let index = 0;
@@ -68,6 +78,8 @@ function displayBooks() {
         close.appendChild(closeIcon);
         card.append(close, title, author, pages);
 
+        close.addEventListener('click', deleteBook);
+
         if(book.read) {
             const container = document.createElement('div');
             const checkmark = document.createElement('ion-icon');
@@ -87,7 +99,6 @@ function displayBooks() {
         index++;
     })
     booksContainer.replaceChildren(...myLibraryDOM);
-    
 }
 
 function showModal() {
