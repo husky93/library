@@ -1,4 +1,4 @@
-# Libarry
+# Library
 Simple application in which you can add and delete books.
 
 #### Features:
