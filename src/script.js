@@ -5,7 +5,7 @@ const modalCancelBtn = document.querySelector('.cancel');
 const addBookForm = document.querySelector('.add-book-form');
 const booksContainer = document.querySelector('.books');
 
-const myLibrary = [];
+let myLibrary = [];
 
 addBookModal.addEventListener('click', (e) => e.stopPropagation());
 modalPopupBtn.addEventListener('click', showModal);
@@ -25,15 +25,59 @@ class Book {
   }
 }
 
+Storage.prototype.setObject = function (key, value) {
+  this.setItem(key, JSON.stringify(value));
+};
+
+Storage.prototype.getObject = function (key) {
+  const value = this.getItem(key);
+  return value && JSON.parse(value);
+};
+
+function storageAvailable(type) {
+  let storage;
+  try {
+    storage = window[type];
+    const x = '__storage_test__';
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  } catch (e) {
+    return (
+      e instanceof DOMException &&
+      // everything except Firefox
+      (e.code === 22 ||
+        // Firefox
+        e.code === 1014 ||
+        // test name field too, because code might not be present
+        // everything except Firefox
+        e.name === 'QuotaExceededError' ||
+        // Firefox
+        e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+      // acknowledge QuotaExceededError only if there's something already stored
+      storage &&
+      storage.length !== 0
+    );
+  }
+}
+
+if (localStorage.getObject('library')) {
+  myLibrary = localStorage.getObject('library');
+  displayBooks();
+}
+
 function addBookToLibrary(e) {
   e.preventDefault();
   hideModal();
   const title = e.target.elements.title.value;
   const author = e.target.elements.author.value;
-  const pages = parseInt(e.target.elements.pages.value);
+  const pages = parseInt(e.target.elements.pages.value, 10);
   const read = e.target.elements.read.checked;
 
   myLibrary.push(new Book(title, author, pages, read));
+  if (storageAvailable('localStorage')) {
+    localStorage.setObject('library', myLibrary);
+  }
 }
 
 function deleteBook(e) {
@@ -42,6 +86,9 @@ function deleteBook(e) {
 
   myLibrary.splice(index, 1);
   displayBooks();
+  if (storageAvailable('localStorage')) {
+    localStorage.setObject('library', myLibrary);
+  }
 }
 
 function displayBooks() {
@@ -225,6 +272,9 @@ function changeReadStatus(e) {
   } else {
     myLibrary[index].read = false;
     removeReadCheckmark(readContainer);
+  }
+  if (storageAvailable('localStorage')) {
+    localStorage.setObject('library', myLibrary);
   }
 }
 
