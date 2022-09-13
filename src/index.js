@@ -14,7 +14,8 @@ const modalPopupBtn = document.querySelector('button[data-modal-toggle]');
 const modalCancelBtn = document.querySelector('.cancel');
 const addBookForm = document.querySelector('.add-book-form');
 const booksContainer = document.querySelector('.books');
-const signInBtn = document.querySelector('.signin-button');
+const signBtn = document.querySelector('.signin-button');
+const username = document.querySelector('.username');
 
 let myLibrary = [];
 
@@ -26,9 +27,9 @@ addBookForm.addEventListener('submit', (e) => {
   addBookToLibrary(e);
   displayBooks();
 });
-signInBtn.addEventListener('click', signIn);
 
 const app = initializeApp(getFirebaseConfig());
+initFirebaseAuth();
 
 class Book {
   constructor(title, author, pages, read) {
@@ -42,6 +43,32 @@ class Book {
 async function signIn() {
   const provider = new GoogleAuthProvider();
   await signInWithPopup(getAuth(), provider);
+}
+
+function signOutUser() {
+  signOut(getAuth());
+}
+
+function isUserSignedIn() {
+  return !!getAuth().currentUser;
+}
+
+function authStateObserver(state) {
+  if (isUserSignedIn()) {
+    signBtn.removeEventListener('click', signIn);
+    signBtn.addEventListener('click', signOutUser);
+    signBtn.textContent = 'Sign Out';
+    username.textContent = state.displayName;
+  } else {
+    signBtn.removeEventListener('click', signOutUser);
+    signBtn.addEventListener('click', signIn);
+    signBtn.textContent = 'Sign In';
+    username.textContent = '';
+  }
+}
+
+function initFirebaseAuth() {
+  onAuthStateChanged(getAuth(), authStateObserver);
 }
 
 Storage.prototype.setObject = function (key, value) {
