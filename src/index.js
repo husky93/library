@@ -10,7 +10,7 @@ import getFirebaseConfig from './firebase-config.js';
 
 const addBookModal = document.querySelector('.modal-panel');
 const modalBackdrop = document.querySelector('.modal-backdrop');
-const modalPopupBtn = document.querySelector('button[data-modal-toggle]');
+const addBookBtn = document.querySelector('button[data-modal-toggle]');
 const modalCancelBtn = document.querySelector('.cancel');
 const addBookForm = document.querySelector('.add-book-form');
 const booksContainer = document.querySelector('.books');
@@ -20,7 +20,7 @@ const username = document.querySelector('.username');
 let myLibrary = [];
 
 addBookModal.addEventListener('click', (e) => e.stopPropagation());
-modalPopupBtn.addEventListener('click', showModal);
+addBookBtn.addEventListener('click', showModal);
 modalBackdrop.addEventListener('click', hideModal);
 modalCancelBtn.addEventListener('click', hideModal);
 addBookForm.addEventListener('submit', (e) => {
@@ -53,17 +53,23 @@ function isUserSignedIn() {
   return !!getAuth().currentUser;
 }
 
+function getUserName() {
+  return getAuth().currentUser.displayName;
+}
+
 function authStateObserver(state) {
   if (isUserSignedIn()) {
     signBtn.removeEventListener('click', signIn);
     signBtn.addEventListener('click', signOutUser);
     signBtn.textContent = 'Sign Out';
-    username.textContent = state.displayName;
+    username.textContent = getUserName();
+    addBookBtn.removeAttribute('disabled');
   } else {
     signBtn.removeEventListener('click', signOutUser);
     signBtn.addEventListener('click', signIn);
     signBtn.textContent = 'Sign In';
     username.textContent = '';
+    addBookBtn.setAttribute('disabled', '');
   }
 }
 
@@ -325,35 +331,37 @@ function changeReadStatus(e) {
 }
 
 function showModal() {
-  modalBackdrop.classList.add('ease-out', 'duration-300', 'opacity-0');
-  addBookModal.classList.add(
-    'ease-out',
-    'duration-300',
-    'opacity-0',
-    'sm:scale-95'
-  );
-  modalBackdrop.classList.remove('hidden');
-  addBookModal.classList.remove('hidden');
-  setTimeout(() => {
-    modalBackdrop.classList.add('opacity-100');
-    addBookModal.classList.add('opacity-100', 'sm:scale-100');
-  }, 200);
-  setTimeout(() => {
-    modalBackdrop.classList.remove(
+  if (isUserSignedIn()) {
+    modalBackdrop.classList.add('ease-out', 'duration-300', 'opacity-0');
+    addBookModal.classList.add(
       'ease-out',
       'duration-300',
       'opacity-0',
-      'opacity-100'
-    );
-    addBookModal.classList.remove(
-      'ease-out',
-      'duration-300',
-      'opacity-0',
-      'opacity-100',
-      'sm:scale-100',
       'sm:scale-95'
     );
-  }, 500);
+    modalBackdrop.classList.remove('hidden');
+    addBookModal.classList.remove('hidden');
+    setTimeout(() => {
+      modalBackdrop.classList.add('opacity-100');
+      addBookModal.classList.add('opacity-100', 'sm:scale-100');
+    }, 200);
+    setTimeout(() => {
+      modalBackdrop.classList.remove(
+        'ease-out',
+        'duration-300',
+        'opacity-0',
+        'opacity-100'
+      );
+      addBookModal.classList.remove(
+        'ease-out',
+        'duration-300',
+        'opacity-0',
+        'opacity-100',
+        'sm:scale-100',
+        'sm:scale-95'
+      );
+    }, 500);
+  }
 }
 
 function hideModal() {
