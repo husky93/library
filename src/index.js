@@ -17,6 +17,7 @@ import {
   setDoc,
   updateDoc,
   doc,
+  getDoc,
   serverTimestamp,
 } from 'firebase/firestore';
 import getFirebaseConfig from './firebase-config.js';
@@ -42,6 +43,7 @@ addBookForm.addEventListener('submit', (e) => {
 });
 
 const app = initializeApp(getFirebaseConfig());
+const db = getFirestore(app);
 initFirebaseAuth();
 
 class Book {
@@ -56,6 +58,11 @@ class Book {
 async function signIn() {
   const provider = new GoogleAuthProvider();
   await signInWithPopup(getAuth(), provider);
+  const docRef = doc(db, 'users', getAuth().currentUser.uid);
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) {
+    updateLibrary();
+  }
 }
 
 function signOutUser() {
@@ -90,9 +97,10 @@ function initFirebaseAuth() {
   onAuthStateChanged(getAuth(), authStateObserver);
 }
 
-async function saveLibrary() {
+async function updateLibrary() {
   try {
-    await addDoc(collection(getFirestore(), 'libraries'), {
+    const usersRef = collection(db, 'users');
+    await setDoc(doc(usersRef, getAuth().currentUser.uid), {
       data: JSON.stringify(myLibrary),
     });
   } catch (error) {
@@ -153,7 +161,7 @@ function addBookToLibrary(e) {
   if (storageAvailable('localStorage')) {
     localStorage.setObject('library', myLibrary);
   }
-  saveLibrary();
+  updateLibrary();
 }
 
 function deleteBook(e) {
@@ -165,6 +173,7 @@ function deleteBook(e) {
   if (storageAvailable('localStorage')) {
     localStorage.setObject('library', myLibrary);
   }
+  updateLibrary();
 }
 
 function displayBooks() {
@@ -352,6 +361,7 @@ function changeReadStatus(e) {
   if (storageAvailable('localStorage')) {
     localStorage.setObject('library', myLibrary);
   }
+  updateLibrary();
 }
 
 function showModal() {
