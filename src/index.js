@@ -90,6 +90,8 @@ function authStateObserver(state) {
     signBtn.textContent = 'Sign In';
     username.textContent = '';
     addBookBtn.setAttribute('disabled', '');
+    myLibrary = [];
+    displayBooks();
   }
 }
 
