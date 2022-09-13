@@ -6,6 +6,19 @@ import {
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+} from 'firebase/firestore';
 import getFirebaseConfig from './firebase-config.js';
 
 const addBookModal = document.querySelector('.modal-panel');
@@ -77,6 +90,16 @@ function initFirebaseAuth() {
   onAuthStateChanged(getAuth(), authStateObserver);
 }
 
+async function saveLibrary() {
+  try {
+    await addDoc(collection(getFirestore(), 'libraries'), {
+      data: JSON.stringify(myLibrary),
+    });
+  } catch (error) {
+    console.error('Error writing new message to Firebase Database', error);
+  }
+}
+
 Storage.prototype.setObject = function (key, value) {
   this.setItem(key, JSON.stringify(value));
 };
@@ -130,6 +153,7 @@ function addBookToLibrary(e) {
   if (storageAvailable('localStorage')) {
     localStorage.setObject('library', myLibrary);
   }
+  saveLibrary();
 }
 
 function deleteBook(e) {
