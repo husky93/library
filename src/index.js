@@ -9,16 +9,9 @@ import {
 import {
   getFirestore,
   collection,
-  addDoc,
-  query,
-  orderBy,
-  limit,
-  onSnapshot,
   setDoc,
-  updateDoc,
   doc,
   getDoc,
-  serverTimestamp,
 } from 'firebase/firestore';
 import getFirebaseConfig from './firebase-config.js';
 
@@ -84,6 +77,7 @@ function authStateObserver(state) {
     signBtn.textContent = 'Sign Out';
     username.textContent = getUserName();
     addBookBtn.removeAttribute('disabled');
+    getLibrary();
   } else {
     signBtn.removeEventListener('click', signOutUser);
     signBtn.addEventListener('click', signIn);
@@ -106,7 +100,19 @@ async function updateLibrary() {
       data: JSON.stringify(myLibrary),
     });
   } catch (error) {
-    console.error('Error writing new message to Firebase Database', error);
+    console.error('Error writing new data to Firebase Database', error);
+  }
+}
+
+async function getLibrary() {
+  try {
+    const docRef = doc(db, 'users', getAuth().currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    const data = JSON.parse(docSnap.data().data);
+    myLibrary = data;
+    displayBooks();
+  } catch (error) {
+    console.error('Error loading data to Firebase Database', error);
   }
 }
 
