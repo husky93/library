@@ -1,3 +1,6 @@
+import getFirebaseConfig from './firebase-config.js';
+import { initializeApp } from 'firebase/app';
+
 const addBookModal = document.querySelector('.modal-panel');
 const modalBackdrop = document.querySelector('.modal-backdrop');
 const modalPopupBtn = document.querySelector('button[data-modal-toggle]');
@@ -15,6 +18,8 @@ addBookForm.addEventListener('submit', (e) => {
   addBookToLibrary(e);
   displayBooks();
 });
+
+const app = initializeApp(getFirebaseConfig());
 
 class Book {
   constructor(title, author, pages, read) {
