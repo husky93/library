@@ -1,5 +1,12 @@
-import getFirebaseConfig from './firebase-config.js';
 import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth';
+import getFirebaseConfig from './firebase-config.js';
 
 const addBookModal = document.querySelector('.modal-panel');
 const modalBackdrop = document.querySelector('.modal-backdrop');
@@ -7,6 +14,7 @@ const modalPopupBtn = document.querySelector('button[data-modal-toggle]');
 const modalCancelBtn = document.querySelector('.cancel');
 const addBookForm = document.querySelector('.add-book-form');
 const booksContainer = document.querySelector('.books');
+const signInBtn = document.querySelector('.signin-button');
 
 let myLibrary = [];
 
@@ -18,6 +26,7 @@ addBookForm.addEventListener('submit', (e) => {
   addBookToLibrary(e);
   displayBooks();
 });
+signInBtn.addEventListener('click', signIn);
 
 const app = initializeApp(getFirebaseConfig());
 
@@ -28,6 +37,11 @@ class Book {
     this.pages = pages;
     this.read = read;
   }
+}
+
+async function signIn() {
+  const provider = new GoogleAuthProvider();
+  await signInWithPopup(getAuth(), provider);
 }
 
 Storage.prototype.setObject = function (key, value) {
