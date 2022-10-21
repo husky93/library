@@ -1,5 +1,7 @@
 # Library
-[CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) app in which you can create a collection of books you've read and you want to read in the future. Made with vanilla Javascript and [Tailwind](https://tailwindcss.com/) CSS framework. [Firebase](https://firebase.google.com/) BaaS was used for backend .
+[CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) app in which you can create a collection of books you've read and you want to read in the future. Made with vanilla Javascript and [Tailwind](https://tailwindcss.com/) CSS framework. [Firebase](https://firebase.google.com/) BaaS was used for backend.
+
+### Live: [click here](https://husky93.github.io/library/)
 
 #### Features:
 - Sing in with google
@@ -11,4 +13,3 @@
 - Update read status for every book
 
 
-Live: [click here](https://husky93.github.io/library/)
